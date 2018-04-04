@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var BeaconFrameSchema = new Schema({
     _id: Schema.Types.ObjectId,
-    userId: Number,
-    beacons: [{macAddress: String, name: String, rssi: Number}],
+    userId: String,
+    beacons: Array,
     recordTime:Number
 },{versionKey: false});
 

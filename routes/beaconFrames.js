@@ -5,21 +5,14 @@ var mongoose = require('mongoose')
 
 var BeaconFrame = require('../models/BeaconFrame')
 
-var realTimeData = {};
-
-
 
 router.post('/', function (req, res) {
-
-    realTimeData[String(req.body.userId)] = req.body;
-
     BeaconFrame.create({
             _id: new mongoose.Types.ObjectId(),
             userId: req.body.userId,
             beacons : req.body.beacons
-        },
-        function (err, beaconFrame) {
-            if (err) return res.status(500).send("There was a problem adding the information to the database.");
+    },function (err, beaconFrame) {
+            if (err) return res.status(500).send(err);
             res.status(200).send(beaconFrame);
     });
 });
