@@ -25,10 +25,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 let beaconFrames = require('./routes/beaconFrames');
 let admin = require('./routes/admin');
 let user = require('./routes/user')
+let counter = require('./routes/counter')
+
+
 
 app.use('/beaconFrames',beaconFrames);
 app.use("/admin",admin);
 app.use('/user',user);
+app.use('/counter', counter);
 
 
 
