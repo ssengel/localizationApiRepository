@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose')
+let express = require('express');
+let router = express.Router();
+let mongoose = require('mongoose');
 
 
-var BeaconFrame = require('../models/BeaconFrame')
+let BeaconFrame = require('../models/BeaconFrame');
 
 
 router.post('/', function (req, res) {
@@ -24,27 +24,12 @@ router.get('/', function (req, res) {
     });
 });
 
-
-// router.get('/:beaconframe_id',function(req,res){
-//
-//     BeaconFrame.find({userId: req.params.beaconframe_id} ,function (err,beaconFrame) {
+// router.get('/:beaconframe_id/last',function (req,res) {
+//     BeaconFrame.find({userId: req.params.beaconframe_id}).sort({$natural:-1}).limit(1).exec(function (err,beaconFrame) {
 //         if (err) return res.status(500).send("Hata oldu..");
 //         res.status(200).send(beaconFrame);
 //     });
 // });
-
-router.get('/:beaconframe_id/last',function (req,res) {
-    BeaconFrame.find({userId: req.params.beaconframe_id}).sort({$natural:-1}).limit(1).exec(function (err,beaconFrame) {
-        if (err) return res.status(500).send("Hata oldu..");
-        res.status(200).send(beaconFrame);
-    });
-});
-
-
-router.get('/allUsers',function (req, res) {
-    res.send(realTimeData);
-
-});
 
 
 

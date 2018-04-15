@@ -1,12 +1,13 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var CounterSchema = new Schema({
+let CounterSchema = new Schema({
     _id: Schema.Types.ObjectId,
-    magazaId: Number,
+    storeId: Number,
     totalPersonCount: Number,
     currentPersonCount: Number,
-    recordTime: Date
+    createdAt: { type: Date, default: Date.now }
 },{versionKey : false});
 
 module.exports = mongoose.model('Counter', CounterSchema);
+

@@ -1,11 +1,12 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var BeaconFrameSchema = new Schema({
+let BeaconFrameSchema = new Schema({
     _id: Schema.Types.ObjectId,
-    userId: String,
+    magazaId: {type: String, default: '333'},
+    userId: {type: Schema.Types.ObjectId, ref: 'Store'},
     beacons: Array,
-    recordTime:Number
+    createdAt: { type: Date, default: Date.now }
 },{versionKey: false});
 
 module.exports = mongoose.model('BeaconFrame', BeaconFrameSchema);
