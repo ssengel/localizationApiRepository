@@ -16,7 +16,7 @@ let Admin = require('./routes/admin');
 let Beacon = require('./routes/beacon');
 let System = require('./routes/system');
 
-//
+//access control
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE')
@@ -26,9 +26,11 @@ app.use(function (req, res, next) {
 
 
 
-app.use('/beaconFrames',BeaconFrame);
-app.use('/user',User);
+app.use('/beaconFrames', BeaconFrame);
+app.use('/user', User);
 app.use('/counter', Counter);
 app.use('/system', System);
+app.use('/admin', Admin);
+app.use('/beacon', Beacon);
 
 module.exports = app;

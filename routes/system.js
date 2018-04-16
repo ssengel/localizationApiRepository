@@ -72,4 +72,11 @@ router.get('/admin', (req, res) => {
     });
 });
 
+router.post('/admin', (req, res)=> {
+    Admin.findOne({ userName: req.body.userName, password: req.body.password }, (err, admin)=>{
+        if(err) return res.status(500).send(err.message);
+        res.status(200).send(admin);
+    })
+})
+
 module.exports = router;
