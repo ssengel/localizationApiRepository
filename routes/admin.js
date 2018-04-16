@@ -8,9 +8,9 @@ let Admin = require('../models/Admin');
 router.get('/:id/stores', (req, res) => {
     Admin.findOne({_id: req.params.id}).populate('stores','name').exec((err, stores) => {
         if(err){
-            return res.status(500).send({status: 500,message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data:stores});
+        res.status(200).send(stores);
     });
 });
 

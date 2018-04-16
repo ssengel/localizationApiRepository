@@ -13,18 +13,18 @@ router.post('/', (req, res) => {
         name: req.body.name
     },(err, beacon)=> {
         if(err){
-            return res.status(500).send({status: 500, message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data: beacon});
+        res.status(200).send(beacon);
     });
 });
 
 router.get('/', (req, res) => {
     Beacon.find({}, (err, beacons) => {
         if (err) {
-            return res.status(500).send({status: 500, message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data: beacons});
+        res.status(200).send(beacons);
     });
 });
 

@@ -8,9 +8,9 @@ let Store = require('../models/Store');
 router.post('/', (req, res) => {
     Store.create({}, (err, store) => {
         if(err){
-            return res.status(500).send({status: 500, message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data: store});
+        res.status(200).send(store);
     });
 });
 
@@ -19,9 +19,9 @@ router.post('/', (req, res) => {
 router.get('/', (req, res) => {
     Store.find({}, (err, stores) => {
         if (err) {
-            return res.status(500).send({status: 500, message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data: stores});
+        res.status(200).send(stores);
     });
 });
 

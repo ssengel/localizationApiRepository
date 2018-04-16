@@ -33,15 +33,15 @@ router.post('/admin/store', (req, res) => {
         notification: []
     }, (err, store) => {
 
-        if(err) return res.status(500).send({status: 500, message: err});
+        if(err) return res.status(500).send(err.message);
 
         Admin.findOne({_id: req.body.adminId}, (err, admin) => {
 
             admin.stores.push(store._id);
 
             admin.save((err, adminStore) => {
-                if (err) return res.status(500).send({status: 500, message: err});
-                res.status(200).send({status: 200, data: store});
+                if (err) return res.status(500).send(err.message);
+                res.status(200).send(store);
             });
         });
     });
@@ -57,9 +57,9 @@ router.post('/admin/store/beacon', (req, res) => {
         name: req.body.name
     },(err, beacon)=> {
         if(err){
-            return res.status(500).send({status: 500, message: err});
+            return res.status(500).send(err.message);
         }
-        res.status(200).send({status: 200, data: beacon});
+        res.status(200).send(beacon);
     });
 });
 
@@ -72,7 +72,7 @@ router.get('/admin', (req, res) => {
     });
 });
 
-router.post('/admin', (req, res)=> {
+router.post('/admin/login', (req, res)=> {
     Admin.findOne({ userName: req.body.userName, password: req.body.password }, (err, admin)=>{
         if(err) return res.status(500).send(err.message);
         res.status(200).send(admin);
