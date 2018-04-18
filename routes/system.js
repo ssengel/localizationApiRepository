@@ -6,7 +6,7 @@ let Admin = require('../models/Admin');
 let Store = require('../models/Store');
 let Beacon = require('../models/Beacon');
 
-//token ile giris yapilmali
+//Admin-Firma Olusturmak
 router.post('/admin', (req, res) => {
     Admin.create({
         _id: new mongoose.Types.ObjectId(),
@@ -15,15 +15,15 @@ router.post('/admin', (req, res) => {
         userName: req.body.userName,
         email: req.body.email,
         password: req.body.password,
-        stores:[]
+        stores: []
     }, (err, admin) => {
-        if(err){
+        if (err) {
             return res.status(500).send(err.message);
         }
         res.status(200).send(admin);
     });
 });
-
+//Magaza Olusturmak
 router.post('/admin/store', (req, res) => {
     Store.create({
         _id: new mongoose.Types.ObjectId(),
@@ -33,9 +33,9 @@ router.post('/admin/store', (req, res) => {
         notification: []
     }, (err, store) => {
 
-        if(err) return res.status(500).send(err.message);
+        if (err) return res.status(500).send(err.message);
 
-        Admin.findOne({_id: req.body.adminId}, (err, admin) => {
+        Admin.findOne({ _id: req.body.adminId }, (err, admin) => {
 
             admin.stores.push(store._id);
 
@@ -47,34 +47,40 @@ router.post('/admin/store', (req, res) => {
     });
 });
 
-
-
+//Beacon Olusturmak
 router.post('/admin/store/beacon', (req, res) => {
-    Beacon.create({
-        _id: new mongoose.Types.ObjectId(),
-        macAddress: req.body.macAddress,
-        storeId:req.body.storeId,
-        name: req.body.name
-    },(err, beacon)=> {
-        if(err){
-            return res.status(500).send(err.message);
-        }
-        res.status(200).send(beacon);
-    });
+
+    Store.findOne({ _id: req.body.storeId }, (err, store) => {
+        if (err) return res.status(500).send(err.message);
+        if (!store) res.status(404).send('Magaza bulunamadi');
+        Beacon.create({
+            _id: new mongoose.Types.ObjectId(),
+            macAddress: req.body.macAddress,
+            storeId: req.body.storeId,
+            name: req.body.name
+        }, (err, beacon) => {
+            if (err)
+                return res.status(500).send(err.message);
+            res.status(200).send(beacon);
+        });
+    })
 });
 
+
+//firmalari listele
 router.get('/admin', (req, res) => {
     Admin.find({}, (err, admins) => {
-        if(err){
+        if (err) {
             return res.status(500).send(err.message);
         }
         res.status(200).send(admins);
     });
 });
 
-router.post('/admin/login', (req, res)=> {
-    Admin.findOne({ userName: req.body.userName, password: req.body.password }, (err, admin)=>{
-        if(err) return res.status(500).send(err.message);
+//firma girisi yap
+router.post('/admin/login', (req, res) => {
+    Admin.findOne({ userName: req.body.userName, password: req.body.password }, (err, admin) => {
+        if (err) return res.status(500).send(err.message);
         res.status(200).send(admin);
     })
 })
