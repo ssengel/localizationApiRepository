@@ -47,12 +47,22 @@ router.post('/admin/store', (req, res) => {
     });
 });
 
+//admine ait magazalari goruntule
+router.get('/admin/:id/store', (req, res) => {
+    Admin.findOne({ _id: req.params.id }).populate('stores').exec((err, admin) => {
+        if (err) return res.status(500).send(err.message);
+        if (!admin) return res.status(404).send('Admin bulunamadi !!');
+        res.status(200).send(admin.stores);
+    })
+})
+
+
 //Beacon Olusturmak
 router.post('/admin/store/beacon', (req, res) => {
 
     Store.findOne({ _id: req.body.storeId }, (err, store) => {
         if (err) return res.status(500).send(err.message);
-        if (!store) res.status(404).send('Magaza bulunamadi');
+        if (!store) return res.status(404).send('Magaza bulunamadi');
         Beacon.create({
             _id: new mongoose.Types.ObjectId(),
             macAddress: req.body.macAddress,
@@ -66,6 +76,17 @@ router.post('/admin/store/beacon', (req, res) => {
     })
 });
 
+//magazaya ait beaconlari goruntule
+router.get('/admin/store/:id/beacon', (req, res) => {
+    Store.findOne({ _id: req.params.id }, (err, store) => {
+        if (err) return res.status(500).send(err.message);
+        if (!store) return res.status(404).send('Magaza bulunamadi !!');
+        Beacon.find({ storeId: req.params.id }, (err, beacons) => {
+            if(err) return res.status(500).send(err.message);
+            res.status(200).send(beacons);
+        })
+    })
+})
 
 //firmalari listele
 router.get('/admin', (req, res) => {
