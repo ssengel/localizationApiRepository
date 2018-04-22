@@ -11,6 +11,7 @@ router.post('/', function (req, res) {
     BeaconFrame.create({
         _id: new mongoose.Types.ObjectId(),
         userId: req.body.userId,
+        storeId: req.body.storeId,
         beacons: req.body.beacons
     }, function (err, beaconFrame) {
         if (err) {
@@ -28,11 +29,11 @@ router.post('/', function (req, res) {
                 req.body.beacons[3].macAddress, req.body.beacons[3].rssi]
             };
 
-            PythonShell.run('../knn.py', options, (err, results) =>{
+            PythonShell.run('../knn.py', options, (err, results) => {
                 if (err) res.status(500).send(err);
                 res.status(200).send(results);
             });
-            
+
         }
 
     });

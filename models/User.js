@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+let mongoose = require('mongoose');
+let Schema = mongoose.Schema;
 
-var UserSchema = new Schema({
+let UserSchema = new Schema({
     _id: Schema.Types.ObjectId,
     name: String,
     lastName: String,
@@ -11,7 +11,6 @@ var UserSchema = new Schema({
     age: Number,
     createdAt: { type: Date, default: Date.now }
 },{versionKey : false});
-
 
 
 module.exports = mongoose.model('User', UserSchema);

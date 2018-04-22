@@ -1,3 +1,4 @@
 module.exports = {
-    secret: "superSecret"
+    secretLevelOne: "normalUser",
+    secretLevelTwo: "companyUser"
 }

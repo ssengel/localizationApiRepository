@@ -2,13 +2,14 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 
-let Admin = require('../models/Admin');
+let Company = require('../models/Company');
 let Store = require('../models/Store');
 let Beacon = require('../models/Beacon');
 
-//Admin-Firma Olusturmak
-router.post('/admin', (req, res) => {
-    Admin.create({
+
+//Firma Olusturmak
+router.post('/company', (req, res) => {
+    Company.create({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         lastName: req.body.lastName,
@@ -16,15 +17,14 @@ router.post('/admin', (req, res) => {
         email: req.body.email,
         password: req.body.password,
         stores: []
-    }, (err, admin) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
-        res.status(200).send(admin);
+    }, (err, Company) => {
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(Company);
     });
 });
+
 //Magaza Olusturmak
-router.post('/admin/store', (req, res) => {
+router.post('/company/store', (req, res) => {
     Store.create({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
@@ -35,11 +35,11 @@ router.post('/admin/store', (req, res) => {
 
         if (err) return res.status(500).send(err.message);
 
-        Admin.findOne({ _id: req.body.adminId }, (err, admin) => {
+        Company.findOne({ _id: req.body.companyId }, (err, company) => {
 
-            admin.stores.push(store._id);
+            company.stores.push(store._id);
 
-            admin.save((err, adminStore) => {
+            company.save((err, companyStore) => {
                 if (err) return res.status(500).send(err.message);
                 res.status(200).send(store);
             });
@@ -47,18 +47,17 @@ router.post('/admin/store', (req, res) => {
     });
 });
 
-//admine ait magazalari goruntule
-router.get('/admin/:id/store', (req, res) => {
-    Admin.findOne({ _id: req.params.id }).populate('stores').exec((err, admin) => {
+//Firmaya ait magazalari goruntule
+router.get('/company/:id/store', (req, res) => {
+    Company.findOne({ _id: req.params.id }).populate('stores').exec((err, company) => {
         if (err) return res.status(500).send(err.message);
-        if (!admin) return res.status(404).send('Admin bulunamadi !!');
-        res.status(200).send(admin.stores);
+        if (!company) return res.status(404).send('firma bulunamadi !!');
+        res.status(200).send(company.stores);
     })
 })
 
-
 //Beacon Olusturmak
-router.post('/admin/store/beacon', (req, res) => {
+router.post('/company/store/beacon', (req, res) => {
 
     Store.findOne({ _id: req.body.storeId }, (err, store) => {
         if (err) return res.status(500).send(err.message);
@@ -77,33 +76,27 @@ router.post('/admin/store/beacon', (req, res) => {
 });
 
 //magazaya ait beaconlari goruntule
-router.get('/admin/store/:id/beacon', (req, res) => {
+router.get('/company/store/:id/beacon', (req, res) => {
     Store.findOne({ _id: req.params.id }, (err, store) => {
         if (err) return res.status(500).send(err.message);
         if (!store) return res.status(404).send('Magaza bulunamadi !!');
         Beacon.find({ storeId: req.params.id }, (err, beacons) => {
-            if(err) return res.status(500).send(err.message);
+            if (err) return res.status(500).send(err.message);
             res.status(200).send(beacons);
         })
     })
 })
 
 //firmalari listele
-router.get('/admin', (req, res) => {
-    Admin.find({}, (err, admins) => {
+router.get('/company', (req, res) => {
+    Company.find({}, (err, companies) => {
         if (err) {
             return res.status(500).send(err.message);
         }
-        res.status(200).send(admins);
+        res.status(200).send(companies);
     });
 });
 
-//firma girisi yap
-router.post('/admin/login', (req, res) => {
-    Admin.findOne({ userName: req.body.userName, password: req.body.password }, (err, admin) => {
-        if (err) return res.status(500).send(err.message);
-        res.status(200).send(admin);
-    })
-})
+
 
 module.exports = router;

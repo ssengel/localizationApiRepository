@@ -13,9 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 let BeaconFrame = require('./routes/beaconFrame');
 let User = require('./routes/user');
 let Counter = require('./routes/counter');
-let Admin = require('./routes/admin');
+let Company = require('./routes/company');
 let Beacon = require('./routes/beacon');
 let System = require('./routes/system');
+let Auth = require('./auth/AuthController');
+
 
 //access control
 app.use(function (req, res, next) {
@@ -29,11 +31,12 @@ app.use(morgan('dev'));
 
 
 
-app.use('/beaconFrames', BeaconFrame);
+app.use('/beaconframe', BeaconFrame);
 app.use('/user', User);
 app.use('/counter', Counter);
 app.use('/system', System);
-app.use('/admin', Admin);
-app.use('/beacon', Beacon);
+app.use('/company', Company);
+// app.use('/beacon', Beacon);
+app.use('/auth', Auth);
 
 module.exports = app;
