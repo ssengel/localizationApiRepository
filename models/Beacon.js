@@ -6,6 +6,7 @@ let BeaconSchema = new Schema({
     macAddress: String,
     storeId: {type: Schema.Types.ObjectId, ref: 'Store'},
     name: String,
+    location: String,
     createdAt: {type: Date, default: Date.now()}
 }, {versionKey: false});
 

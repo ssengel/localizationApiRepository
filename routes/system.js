@@ -7,39 +7,25 @@ let Store = require('../models/Store');
 let Beacon = require('../models/Beacon');
 
 
-//Firma Olusturmak
-router.post('/company', (req, res) => {
-    Company.create({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        lastName: req.body.lastName,
-        userName: req.body.userName,
-        email: req.body.email,
-        password: req.body.password,
-        stores: []
-    }, (err, Company) => {
+
+//Firmaya Magaza Eklemek
+router.post('/company/:id/store', (req, res) => {
+
+    Company.findOne({ _id: req.params.id }, (err, company) => {
         if (err) return res.status(500).send(err.message);
-        res.status(200).send(Company);
-    });
-});
+        if (!company) return res.status(404).send('magaza bulunamadi..');
 
-//Magaza Olusturmak
-router.post('/company/store', (req, res) => {
-    Store.create({
-        _id: new mongoose.Types.ObjectId(),
-        name: req.body.name,
-        map: req.body.map,
-        dataSet: req.body.dataSet,
-        notification: []
-    }, (err, store) => {
-
-        if (err) return res.status(500).send(err.message);
-
-        Company.findOne({ _id: req.body.companyId }, (err, company) => {
+        Store.create({
+            _id: new mongoose.Types.ObjectId(),
+            name: req.body.name,
+            map: req.body.map,
+            dataSet: req.body.dataSet,
+            notifications: []
+        }, (err, store) => {
+            if(err) return res.status(500).send(err.message);
 
             company.stores.push(store._id);
-
-            company.save((err, companyStore) => {
+            company.save((err, mCompany) => {
                 if (err) return res.status(500).send(err.message);
                 res.status(200).send(store);
             });
@@ -57,26 +43,26 @@ router.get('/company/:id/store', (req, res) => {
 })
 
 //Beacon Olusturmak
-router.post('/company/store/beacon', (req, res) => {
+router.post('/store/:id/beacon', (req, res) => {
 
-    Store.findOne({ _id: req.body.storeId }, (err, store) => {
+    Store.findOne({ _id: req.params.id }, (err, store) => {
         if (err) return res.status(500).send(err.message);
         if (!store) return res.status(404).send('Magaza bulunamadi');
         Beacon.create({
             _id: new mongoose.Types.ObjectId(),
             macAddress: req.body.macAddress,
-            storeId: req.body.storeId,
-            name: req.body.name
+            storeId: req.params.id,
+            name: req.body.name,
+            location: req.body.location
         }, (err, beacon) => {
-            if (err)
-                return res.status(500).send(err.message);
+            if (err) return res.status(500).send(err.message);
             res.status(200).send(beacon);
         });
     })
 });
 
 //magazaya ait beaconlari goruntule
-router.get('/company/store/:id/beacon', (req, res) => {
+router.get('/store/:id/beacon', (req, res) => {
     Store.findOne({ _id: req.params.id }, (err, store) => {
         if (err) return res.status(500).send(err.message);
         if (!store) return res.status(404).send('Magaza bulunamadi !!');
@@ -90,9 +76,7 @@ router.get('/company/store/:id/beacon', (req, res) => {
 //firmalari listele
 router.get('/company', (req, res) => {
     Company.find({}, (err, companies) => {
-        if (err) {
-            return res.status(500).send(err.message);
-        }
+        if (err) return res.status(500).send(err.message);
         res.status(200).send(companies);
     });
 });
