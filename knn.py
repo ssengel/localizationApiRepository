@@ -29,7 +29,7 @@ def main():
 	trainDataClass = np.array(df.ix[:, 4:])
 	testData = range(4)
 
-
+	
 	for i in range(1, len(sys.argv), 2):
 		index = columns.index(sys.argv[i])
 		testData[index] = float(sys.argv[i+1])

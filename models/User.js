@@ -8,7 +8,6 @@ let UserSchema = new Schema({
     userName: String,
     email: String,
     password: String,
-    age: Number,
     createdAt: { type: Date, default: Date.now }
 },{versionKey : false});
 

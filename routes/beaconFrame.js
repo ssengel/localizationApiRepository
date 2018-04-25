@@ -15,24 +15,32 @@ router.post('/', function (req, res) {
         beacons: req.body.beacons
     }, function (err, beaconFrame) {
         if (err) {
-            return res.status(500).send(err);
+            return res.status(500).send(err.message);
         } else {
-
-            let options = {
-                mode: 'text',
-                pythonPath: '/usr/bin/python',
-                pythonOptions: ['-u'],
-                scriptPath: __dirname,
-                args: [req.body.beacons[0].macAddress, req.body.beacons[0].rssi,
-                req.body.beacons[1].macAddress, req.body.beacons[1].rssi,
-                req.body.beacons[2].macAddress, req.body.beacons[2].rssi,
-                req.body.beacons[3].macAddress, req.body.beacons[3].rssi]
-            };
-
-            PythonShell.run('../knn.py', options, (err, results) => {
-                if (err) res.status(500).send(err);
-                res.status(200).send(results);
-            });
+            if(req.body.beacons.length>3){
+                let options = {
+                    mode: 'text',
+                    pythonPath: '/usr/bin/python',
+                    pythonOptions: ['-u'],
+                    scriptPath: __dirname,
+                    args: [req.body.beacons[0].macAddress, req.body.beacons[0].rssi,
+                    req.body.beacons[1].macAddress, req.body.beacons[1].rssi,
+                    req.body.beacons[2].macAddress, req.body.beacons[2].rssi,
+                    req.body.beacons[3].macAddress, req.body.beacons[3].rssi]
+                };
+                //console.log(options.args)
+                PythonShell.run('../knn.py', options, (err, konum) => {
+                    if (err){
+                        res.status(500).send(err.message);
+                        //console.log(err.message);
+                    }
+                    console.log(`Tahmin edilen konum: ${konum}`)
+                    res.status(200).send(konum);
+                });
+            }else{
+                console.log(`${req.body.beacons.length} beacondan sinyan aliniyor..`);
+                res.status(403).send(`${req.body.beacons.length} beacondan sinyan aliniyor..`);
+            }
 
         }
 
