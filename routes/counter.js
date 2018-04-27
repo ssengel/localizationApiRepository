@@ -1,26 +1,28 @@
-let express = require('express')
-let router = express.Router()
-let mongoose = require('mongoose')
+let express = require('express');
+let router = express.Router();
+let mongoose = require('mongoose');
+let Verify2 = require('../auth/VerifyToken2');
+let Counter = require('../models/Counter');
 
-let Counter = require('../models/Counter')
 
-
-router.post('/', function (req, res) {
+router.post('/store/:id', function (req, res) {
     Counter.create({
         _id: new mongoose.Types.ObjectId(),
-        storeId: req.body.storeId,
+        storeId: req.params.id,
         totalPersonCount: req.body.totalPersonCount,
         currentPersonCount: req.body.currentPersonCount
     }, function (err, counter) {
         if (err) {
             return res.status(500).send(err);
         } else {
+            console.log(counter)
             res.status(200).send(counter);
         }
     });
 });
 
-router.get('/', function (req, res) {
+router.get('/store/:id',Verify2, function (req, res) {
+    //Company ve Store Kontrolu
     Counter.find({}, function (err, counters) {
         if (err) {
             return res.status(500).send(err);
@@ -29,7 +31,6 @@ router.get('/', function (req, res) {
         }
     });
 });
-
 
 
 
