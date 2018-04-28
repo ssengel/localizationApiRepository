@@ -3,6 +3,7 @@ let Schema = mongoose.Schema;
 
 let UserSchema = new Schema({
     _id: Schema.Types.ObjectId,
+    companyId: {type: Schema.Types.ObjectId, ref: 'Company'},
     name: String,
     lastName: String,
     userName: String,

@@ -27,16 +27,17 @@ app.use(function (req, res, next) {
     next()
 })
 
+
+//log
 app.use(morgan('dev'));
 
 
 
-app.use('/beaconframe', BeaconFrame);
+app.use('/user/beaconframe', BeaconFrame);
 app.use('/user', User);
 app.use('/counter', Counter);
 app.use('/system', System);
 app.use('/company', Company);
-// app.use('/beacon', Beacon);
 app.use('/auth', Auth);
 
 module.exports = app;

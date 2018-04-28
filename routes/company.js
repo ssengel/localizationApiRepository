@@ -2,11 +2,11 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 let Verify2 = require('../auth/VerifyToken2');
-// let errorHandler = require
 let Company = require('../models/Company');
 let Beacon = require('../models/Beacon');
 let Store = require('../models/Store');
-// let Store = require('../models/Store');
+
+
 
 //Firmanin butun Magazalari
 router.get('/store', Verify2, (req, res) => {
@@ -109,5 +109,34 @@ router.put('/store/:id/notification/:name', Verify2, (req, res) => {
     });
 });
 
+// Kullanicinin Firma Id bilgisini saklamasi gerekir
+// Her firmanin bir uygulamasi oldugunu varsayiyoruz
 
+//Firma'ya ait Butun Kullanicilar
+router.get('/',Verify2, (req,res) =>{
+    Company.findOne({ _id: req.companyId }, (err, company) => {
+        if (err) return res.status(500).send(err.message);
+        if (!company) return res.status(404).send("Firma bulunamadi..");
+
+        User.find({}, (err, users) =>{
+            if (err) return res.status(500).send(err.message);
+            res.status(200).send(users);
+        });
+    });
+    
+});
+
+//Firmanin Bir magazasinin Butun Kullanicilari
+router.get('/',Verify2, (req,res) =>{
+    Company.findOne({ _id: req.companyId }, (err, company) => {
+        if (err) return res.status(500).send(err.message);
+        if (!company) return res.status(404).send("Firma bulunamadi..");
+
+        User.find({}, (err, users) =>{
+            if (err) return res.status(500).send(err.message);
+            res.status(200).send(users);
+        });
+    });
+    
+});
 module.exports = router;
