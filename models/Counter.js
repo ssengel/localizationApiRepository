@@ -3,7 +3,7 @@ let Schema = mongoose.Schema;
 
 let CounterSchema = new Schema({
     _id: Schema.Types.ObjectId,
-    storeId: Number,
+    storeId: {type: Schema.Types.ObjectId, ref: 'Store'},
     totalPersonCount: Number,
     currentPersonCount: Number,
     createdAt: { type: Date, default: Date.now }
