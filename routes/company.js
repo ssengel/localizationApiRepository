@@ -155,4 +155,11 @@ router.get('/store/:id/counter',Verify2, (req,res) =>{
     
 });
 
+router.get('/store/:id/beaconframe', (req,res) => {
+    BeaconFrame.find({userId: req.params.beaconframe_id}).sort({$natural:-1}).limit(1).exec((err,beaconFrame) => {
+        if (err) return res.status(500).send("Hata oldu..");
+        res.status(200).send(beaconFrame);
+    });
+});
+
 module.exports = router;
