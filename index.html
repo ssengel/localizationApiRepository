@@ -12,14 +12,17 @@
             height: 450px;
             width: 450px;
         }
+
         .sml {
-            width: 112.5px;
-            height: 112.5px;
+            width: 150px;
+            height: 150px;
             outline: 1px #555 dashed;
             float: left;
-            background-color: aquamarine;
+            background-color:  rgb(128, 126, 126);
             border-radius: 50%;
         }
+
+
         .dot {
             background-color: #bbb;
             border-radius: 50%;
@@ -31,45 +34,79 @@
     <body>
 
         <div id="mainContent">
-            <div id="A" class="sml"></div>
-            <div id="B" class="sml"></div>
-            <div id="C" class="sml"></div>
-            <div id="D" class="sml"></div>
-            <div id="E" class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-            <div class="sml"></div>
-
+            <div id="A" class="sml">A</div>
+            <div id="B" class="sml">B</div>
+            <div id="C" class="sml">C</div>
+            <div id="D" class="sml">D</div>
+            <div id="E" class="sml">E</div>
+            <div id="F" class="sml">F</div>
+            <div id="G" class="sml">G</div>
+            <div id="H" class="sml">H</div>
+            <div id="I" class="sml">I</div>
         </div>
 
-
-        <script src="https://d3js.org/d3.v5.min.js"></script>
         <script>
-            function findTopLeft(element) {
-                var rec = document.getElementById(element).getBoundingClientRect();
-                return { top: rec.top + window.scrollY, left: rec.left + window.scrollX };
-            };
+            // function findTopLeft(element) {
+            //     var rec = document.getElementById(element).getBoundingClientRect();
+            //     return { top: rec.top + window.scrollY, left: rec.left + window.scrollX };
+            // };
 
-            function findCentral(element) {
-                var rec = document.getElementById(element).getBoundingClientRect();
-                return { top: rec.top + window.scrollY + (112.5 / 2), left: rec.left + window.scrollX + (112.5 / 2) };
-            };
+            // function findCentral(element) {
+            //     var rec = document.getElementById(element).getBoundingClientRect();
+            //     return { top: rec.top + window.scrollY + (112.5 / 2), left: rec.left + window.scrollX + (112.5 / 2) };
+            // };
 
-            function drawCircle(elementId) {
-                var circle = document.createElement("div");
-                circle.className = "dot";
+            // function drawCircle(elementId) {
+            //     var circle = document.createElement("div");
+            //     circle.className = "dot";
 
-                document.getElementById(elementId).appendChild(circle);
+            //     document.getElementById(elementId).appendChild(circle);
+            // }
+
+            function clearMap(){
+                x = document.getElementsByClassName("sml");
+                let positions = ["A","B","C","D","E","F"]
+                positions.forEach(pos => {
+                    changeBackGroundColor(pos, "rgb(128, 126, 126)")
+                    console.log(x)
+                });
+            }
+
+            function changeBackGroundColor(elementId, color){
+                let element = document.getElementById(elementId);
+                element.style.backgroundColor = color;
+                console.log(element.style.backgroundColor);
             }
             
+            function incBackGroundColor(elementId, count){
+                let element = document.getElementById(elementId); 
+                var rgb=element.style.backgroundColor.replace("rgb(","").replace(")","").split(",");
+                rgb[0]=Number(rgb[0])+count;
+                rgb[1]=0;
+                rgb[2]=0;
+                element.style.backgroundColor="rgb("+rgb[0]+","+rgb[1]+","+rgb[2]+")";
+               
+            }
+
+            function reqListener() {
+                data = JSON.parse(this.responseText);
+                for( i in data){
+                    console.log(i, data[i])
+                    incBackGroundColor(data[i],50);
+                }
+            }
+
+
+            function getData() {
+                clearMap()
+                var oReq = new XMLHttpRequest();
+                oReq.addEventListener("load", reqListener);
+                oReq.open("GET", "http://localhost:8080/user/beaconframe");
+                oReq.send();
+            }
+
+            setInterval(getData, 2000);
+
         </script>
     </body>
 </head>

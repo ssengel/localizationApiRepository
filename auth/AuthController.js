@@ -19,7 +19,7 @@ router.post('/user/login', function (req, res) {
         if (!user) return res.status(404).send('Kullanici Bulunamadi.');
         //Parola dogrulama
         let result = bcrypt.compareSync(req.body.password, user.password);
-        if (!result) return res.status(401).send({ auth: false, token: null });
+        if (!result) return res.status(200).send({ auth: false, token: null });
         //decode
         let token = jwt.sign({ id: user._id }, config.secretLevelOne, { expiresIn: 86400 });
 

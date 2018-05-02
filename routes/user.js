@@ -39,6 +39,9 @@ router.get('/notification', (req, res) => {
 
 // Verify1 uygulanmali
 // Kullanicinin tarama sonucu gonderdigi beaconFrame' kayit edilmesi
+
+let lastData = new Map();
+
 router.post('/beaconframe', (req, res) => {
     if (req.body.beacons.length > 3) {
         let options = {
@@ -63,22 +66,36 @@ router.post('/beaconframe', (req, res) => {
                 location: String(konum)
             }, (err, beaconFrame) =>{
                 if (err) return res.status(500).send(err.message);
+                
                 res.status(200).send({ status: true, konum: String(konum) });
             })
         });
     } else {
         console.log(`${req.body.beacons.length} beacondan sinyan aliniyor..`);
+        //let index = Math.ceil(Math.random()*6);
+        //lastData.set(req.body.userId,positions[index])
         res.status(403).send(`${req.body.beacons.length} beacondan sinyan aliniyor..`);
-
     }
 });
 
-router.get('/:beaconframe_id/last',function (req,res) {
-    BeaconFrame.find({userId: req.params.beaconframe_id}).sort({$natural:-1}).limit(1).exec(function (err,beaconFrame) {
-        if (err) return res.status(500).send("Hata oldu..");
-        res.status(200).send(beaconFrame);
+
+router.get('/beaconframe', (req, res) =>{
+     
+    res.status(200).send(mapToObj(lastData))
+    lastData.clear();
+})
+
+let positions = ["A","B","C","D","E","F"]
+
+function mapToObj(inputMap) {
+    let obj = {};
+
+    inputMap.forEach(function(value, key){
+        obj[key] = value
     });
-});
+
+    return obj;
+}
 
 
 //Butun BeaconFrameler
