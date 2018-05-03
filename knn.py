@@ -25,16 +25,16 @@ def main():
 	df.head()  # arastir...
 	columns = list(df.columns)
 
-	trainData = np.array(df.ix[:, :4])
-	trainDataClass = np.array(df.ix[:, 4:])
-	testData = range(4)
+	trainData = np.array(df.ix[:, :5])
+	trainDataClass = np.array(df.ix[:, 5:])
+	testData = range(5)
 
 	
 	for i in range(1, len(sys.argv), 2):
 		index = columns.index(sys.argv[i])
 		testData[index] = float(sys.argv[i+1])
 
-	kNearestNeighbor(trainData, trainDataClass, np.array(testData), 5)
+	kNearestNeighbor(trainData, trainDataClass, np.array(testData), 10)
 
 if __name__ == "__main__":
 	main()
