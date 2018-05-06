@@ -5,8 +5,8 @@ let mongoose = require('mongoose');
 let Company = require('../models/Company');
 let Store = require('../models/Store');
 let Beacon = require('../models/Beacon');
-
-
+let User = require('../models/User');
+let Counter = require('../models/Counter');
 
 //Firmaya Magaza Eklemek
 router.post('/company/:id/store', (req, res) => {
@@ -81,6 +81,18 @@ router.get('/company', (req, res) => {
     });
 });
 
+router.get('/user', (req, res) =>{
+	User.find({}, (err, users) =>{
+		if(err) return res.status(500).send(err.message);
+		res.status(200).send(users);
+	})
+});
 
+router.get('/counter', (req, res) =>{
+	Counter.find({}, (err, counters) =>{
+		if(err) return res.status(500).send(err.message);
+		res.status(200).send(counters);
+	});
+});
 
 module.exports = router;

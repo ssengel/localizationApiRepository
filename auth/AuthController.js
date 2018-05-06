@@ -14,16 +14,21 @@ let Company = require('../models/Company');
 
 //Login User Mobil
 router.post('/user/login', function (req, res) {
+    // test amacli bir gecikme >>
+    let waitTill = new Date(new Date().getTime() + 1 * 1000);
+    while (waitTill > new Date()) { }
+    // << test
+
     User.findOne({ userName: req.body.userName }, function (err, user) {
         if (err) return res.status(500).send('Sunucuda bir hata var.\n' + err);
-        if (!user) return res.status(404).send('Kullanici Bulunamadi.');
+        if (!user) return res.status(200).send({ auth: false, message: "Kullanici Bulunamadi !" });
         //Parola dogrulama
         let result = bcrypt.compareSync(req.body.password, user.password);
-        if (!result) return res.status(200).send({ auth: false, token: null });
+        if (!result) return res.status(200).send({ auth: false, message: "Sifre Dogrulanamadi !" });    
         //decode
         let token = jwt.sign({ id: user._id }, config.secretLevelOne, { expiresIn: 86400 });
 
-        res.status(200).send({auth: true, token: token, user: user});
+        res.status(200).send({ auth: true, token: token, user: user, message: "Giris Basarili" });
 
     });
 });
@@ -41,12 +46,12 @@ router.post('/user/register', function (req, res) {
         email: req.body.email,
         password: hashedPassword
     }, (err, user) => {
-        if (err) return res.status(500).send({auth: false, message: err.message});
+        if (err) return res.status(500).send({ auth: false, message: err.message });
 
         let token = jwt.sign({ id: user._id }, config.secretLevelOne, {
             expiresIn: 86400 // expires in 24 hours
         });
-        res.status(200).send({auth:true, token: token, userInfo: user});
+        res.status(200).send({ auth: true, token: token, userInfo: user });
     });
 
 });
@@ -63,7 +68,7 @@ router.post('/company/login', (req, res) => {
             return res.status(401).send({ auth: false, token: null });
         }
         let token = jwt.sign({ id: company._id }, config.secretLevelTwo, { expiresIn: 86400 });
-        res.status(200).send({auth:true, token: token});
+        res.status(200).send({ auth: true, token: token });
     })
 })
 
