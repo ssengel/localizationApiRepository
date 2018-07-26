@@ -8,6 +8,7 @@ let Beacon = require('../models/Beacon');
 let User = require('../models/User');
 let Counter = require('../models/Counter');
 
+
 //Firmaya Magaza Eklemek
 router.post('/company/:id/store', (req, res) => {
 
@@ -73,13 +74,7 @@ router.get('/store/:id/beacon', (req, res) => {
     })
 })
 
-//firmalari listele
-router.get('/company', (req, res) => {
-    Company.find({}, (err, companies) => {
-        if (err) return res.status(500).send(err.message);
-        res.status(200).send(companies);
-    });
-});
+
 
 router.get('/user', (req, res) =>{
 	User.find({}, (err, users) =>{
@@ -93,6 +88,36 @@ router.get('/counter', (req, res) =>{
 		if(err) return res.status(500).send(err.message);
 		res.status(200).send(counters);
 	});
+});
+
+//frontend icin
+
+//firmalari listele
+router.get('/company', (req, res) => {
+    Company.find({}, (err, companies) => {
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(companies);
+    });
+});
+
+//Firma getir
+router.get('/company/:id', (req, res) => {
+    Company.findOne({ _id: req.params.id }, (err, company)=>{
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(company);
+    })
+})
+
+//Firmanin Magazalarini getir
+router.get('/company/:id/store',(req, res) => {
+    Company.findOne({ _id: req.params.id }).
+        populate('stores').
+        exec((err, company) => {
+            if (err) {
+                return res.status(500).send(err.message);
+            }
+            res.status(200).send(company.stores);
+        });
 });
 
 module.exports = router;
