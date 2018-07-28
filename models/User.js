@@ -5,10 +5,11 @@ let UserSchema = new Schema({
     _id: Schema.Types.ObjectId,
     companyId: {type: Schema.Types.ObjectId, ref: 'Company'},
     name: String,
-    lastName: String,
-    userName: String,
+    lastname: String,
+    username: String,
     email: String,
     password: String,
+    role:String,
     createdAt: { type: Date, default: Date.now }
 },{versionKey : false});
 

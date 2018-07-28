@@ -2,24 +2,41 @@ let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
 let PythonShell = require('python-shell');
-
-//auth
-let Verify1 = require('../auth/VerifyToken1');
-
+let permit = require('../helpers/permission');
 //models
 let User = require('../models/User');
 let BeaconFrame = require('../models/BeaconFrame');
 let Store = require('../models/Store');
 
-//Kullanicinin bilgileri
-router.get('/', Verify1, (req, res) => {
-    User.findOne({ _id: req.userId }, (err, user) => {
-        if (err) return res.status(500).send(err.message);
-        if (!user) return res.status(404).send('Kullanici bulunamadi');
 
-        res.status(200).send(user);
+//butun kullanicilar
+router.get('/', permit('admin'), (req, res) =>{
+    User.find({}, (err, users) =>{
+        if(err) return res.status(500).send(err.message);
+        res.status(200).send(users);
     });
 });
+
+//tek bir kullanici
+router.get('/:id', permit('normal','company','admin'), (req, res) =>{
+    User.findOne({_id: req.params.id}, (err, users) =>{
+        if(err) return res.status(500).send(err.message);
+        res.status(200).send(users);
+    });
+});
+
+
+
+
+// //Kullanicinin bilgileri
+// router.get('/', (req, res) => {
+//     User.findOne({ _id: req.userId }, (err, user) => {
+//         if (err) return res.status(500).send(err.message);
+//         if (!user) return res.status(404).send('Kullanici bulunamadi');
+
+//         res.status(200).send(user);
+//     });
+// });
 
 //Firmanin bir magazasinin butun bildirimleri
 router.get('/notification', (req, res) => {

@@ -9,6 +9,8 @@ let User = require('../models/User');
 let Counter = require('../models/Counter');
 
 
+
+
 //Firmaya Magaza Eklemek
 router.post('/company/:id/store', (req, res) => {
 
@@ -62,62 +64,5 @@ router.post('/store/:id/beacon', (req, res) => {
     })
 });
 
-//magazaya ait beaconlari goruntule
-router.get('/store/:id/beacon', (req, res) => {
-    Store.findOne({ _id: req.params.id }, (err, store) => {
-        if (err) return res.status(500).send(err.message);
-        if (!store) return res.status(404).send('Magaza bulunamadi !!');
-        Beacon.find({ storeId: req.params.id }, (err, beacons) => {
-            if (err) return res.status(500).send(err.message);
-            res.status(200).send(beacons);
-        })
-    })
-})
-
-
-
-router.get('/user', (req, res) =>{
-	User.find({}, (err, users) =>{
-		if(err) return res.status(500).send(err.message);
-		res.status(200).send(users);
-	})
-});
-
-router.get('/counter', (req, res) =>{
-	Counter.find({}, (err, counters) =>{
-		if(err) return res.status(500).send(err.message);
-		res.status(200).send(counters);
-	});
-});
-
-//frontend icin
-
-//firmalari listele
-router.get('/company', (req, res) => {
-    Company.find({}, (err, companies) => {
-        if (err) return res.status(500).send(err.message);
-        res.status(200).send(companies);
-    });
-});
-
-//Firma getir
-router.get('/company/:id', (req, res) => {
-    Company.findOne({ _id: req.params.id }, (err, company)=>{
-        if (err) return res.status(500).send(err.message);
-        res.status(200).send(company);
-    })
-})
-
-//Firmanin Magazalarini getir
-router.get('/company/:id/store',(req, res) => {
-    Company.findOne({ _id: req.params.id }).
-        populate('stores').
-        exec((err, company) => {
-            if (err) {
-                return res.status(500).send(err.message);
-            }
-            res.status(200).send(company.stores);
-        });
-});
 
 module.exports = router;

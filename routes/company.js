@@ -1,16 +1,31 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
-let Verify2 = require('../auth/VerifyToken2');
 let Company = require('../models/Company');
-let Beacon = require('../models/Beacon');
 let Store = require('../models/Store');
 let Counter = require('../models/Counter');
+let permit = require('../helpers/permission');
 
 
-//Firmanin butun Magazalari
-router.get('/store', Verify2, (req, res) => {
-    Company.findOne({ _id: req.companyId }).
+//all Company
+router.get('/',  permit("admin"), (req, res) => {
+    Company.find({}, (err, companies) => {
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(companies);
+    });
+});
+
+//single Company
+router.get('/:id',  permit("admin","company"), (req, res) => {
+    Company.findOne({ _id: req.params.id }, (err, company)=>{
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(company);
+    })
+})
+
+//all stores of a company
+router.get('/:id/store', permit('admin','company'), (req, res) => {
+    Company.findOne({ _id: req.params.id }).
         populate('stores').
         exec((err, company) => {
             if (err) {
@@ -20,21 +35,24 @@ router.get('/store', Verify2, (req, res) => {
         });
 });
 
-//Firmanin bir tane magazasi
-router.get('/store/:id', Verify2, (req, res) => {
-    Company.findOne({ _id: req.companyId }, (err, company) => {
+//store of a company
+router.get('/:id/store/:storeId', permit('admin','company'), (req, res) => {
+    Company.findOne({ _id: req.params.id }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
 
-        Store.findOne({ _id: req.params.id }, (err, store) => {
+        Store.findOne({ _id: req.params.storeId }, (err, store) => {
             if (!store) return res.status(500).send('Magaza bulunamadi !!');
             res.status(200).send(store);
         });
     });
 });
 
+
+// asagisi duzeltilmeli...
+
 //Firmanin bir magazasina Kampanya Ekle
-router.post('/store/:id/notification', Verify2, (req, res) => {
+router.post('/store/:id/notification',(req, res) => {
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
@@ -52,18 +70,10 @@ router.post('/store/:id/notification', Verify2, (req, res) => {
 });
 
 
-//Firmanin bir magazasinin butun bildirimleri
-router.get('/store/:id/notification', Verify2, (req, res) => {
-    Company.findOne({ _id: req.companyId }).
-        populate({ path: 'stores', match: { _id: req.params.id } }).//bir tane magaza getirir
-        exec((err, company) => {
-            if (err) return res.status(500).send(err.message);
-            res.status(200).send(company.stores[0].notifications);
-        });
-});
+
 
 //Magazanin name'i XXX olan  bildirimini  getirir
-router.get('/store/:id/notification/:name', Verify2, (req, res) => {
+router.get('/store/:id/notification/:name', (req, res) => {
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
@@ -76,7 +86,7 @@ router.get('/store/:id/notification/:name', Verify2, (req, res) => {
 });
 
 //Magazanin name'i XXX olan  bildirimi  gunceller
-router.put('/store/:id/notification/:name', Verify2, (req, res) => {
+router.put('/store/:id/notification/:name', (req, res) => {
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
@@ -110,7 +120,7 @@ router.put('/store/:id/notification/:name', Verify2, (req, res) => {
 
 
 //Firma'ya ait Butun Kullanicilar
-router.get('/',Verify2, (req,res) =>{
+router.get('/',(req,res) =>{
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
@@ -123,7 +133,7 @@ router.get('/',Verify2, (req,res) =>{
 });
 
 //Firmanin Bir magazasinin Butun Kullanicilari
-router.get('/',Verify2, (req,res) =>{
+router.get('/', (req,res) =>{
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
@@ -137,7 +147,7 @@ router.get('/',Verify2, (req,res) =>{
 });
 
 //Magazanin Son Counter Bilgisi
-router.get('/store/:id/counter',Verify2, (req,res) =>{
+router.get('/store/:id/counter', (req,res) =>{
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);
         if (!company) return res.status(404).send("Firma bulunamadi..");
