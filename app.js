@@ -1,10 +1,11 @@
 let express = require('express');
-let bodyParser = require('body-parser');
-let morgan = require('morgan');
-let db = require('./db')
 let app = express();
+let db = require('./db')
+let bodyParser = require('body-parser');
+let morgan = require('morgan');//logger
 let tokenController = require('./helpers/tokenController');
 let cors = require('cors');
+let path = require('path');
 
 
 
@@ -18,17 +19,17 @@ let Auth = require('./routes/auth');
 
 
 //middleware
+app.use("/publicImages", express.static(path.resolve(__dirname, 'publicImages')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
+
 app.use(cors())
 
 
 //routes
 app.use('/auth', Auth);
 app.use(tokenController);
-
-
 
 app.use('/user', User);
 app.use('/store', Store)

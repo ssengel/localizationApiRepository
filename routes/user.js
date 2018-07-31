@@ -3,6 +3,25 @@ let router = express.Router();
 let mongoose = require('mongoose');
 let PythonShell = require('python-shell');
 let permit = require('../helpers/permission');
+let multer = require('multer');
+
+//multer setup
+
+let storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'publicImages/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+
+let upload = multer({
+    storage: storage
+}).single('photo');
+
+
+
 //models
 let User = require('../models/User');
 let BeaconFrame = require('../models/BeaconFrame');
@@ -10,33 +29,44 @@ let Store = require('../models/Store');
 
 
 //butun kullanicilar
-router.get('/', permit('admin'), (req, res) =>{
-    User.find({}, (err, users) =>{
-        if(err) return res.status(500).send(err.message);
+router.get('/', permit('admin'), (req, res) => {
+    User.find({}, (err, users) => {
+        if (err) return res.status(500).send(err.message);
         res.status(200).send(users);
     });
 });
 
 //tek bir kullanici
-router.get('/:id', permit('normal','company','admin'), (req, res) =>{
-    User.findOne({_id: req.params.id}, (err, users) =>{
-        if(err) return res.status(500).send(err.message);
-        res.status(200).send(users);
+router.get('/:id', permit('normal', 'company', 'admin'), (req, res) => {
+    User.findOne({ _id: req.params.id }, (err, user) => {
+        if (err) return res.status(500).send(err.message);
+        res.status(200).send(user);
     });
 });
 
+//image Upload
+router.put('/:id/image', permit('normal', 'company', 'admin'), (req, res) => {
+    let file = {};
+    upload(req, res, function (uploadError) {
+        if (uploadError)
+            return res.status(422).send("resim yuklenirken hata meydana geldi !");
+        else{
+            file = req.file;
+            User.findById(req.params.id,(err,user) =>{
+                if(err) return res.status(433).send(err.message);
+                user.image = {
+                    originalname: file.originalname,
+                    path: file.path
+                } 
+                user.save((err) =>{
+                    if(err) return res.status(433).send(err)
+                })
+                return res.status(200).send(user);
+            })
+        }
+    });
+});
 
-
-
-// //Kullanicinin bilgileri
-// router.get('/', (req, res) => {
-//     User.findOne({ _id: req.userId }, (err, user) => {
-//         if (err) return res.status(500).send(err.message);
-//         if (!user) return res.status(404).send('Kullanici bulunamadi');
-
-//         res.status(200).send(user);
-//     });
-// });
 
 //Firmanin bir magazasinin butun bildirimleri
 router.get('/notification', (req, res) => {
@@ -68,7 +98,7 @@ router.post('/beaconframe', (req, res) => {
                 req.body.beacons[1].macAddress, req.body.beacons[1].rssi,
                 req.body.beacons[2].macAddress, req.body.beacons[2].rssi,
                 req.body.beacons[3].macAddress, req.body.beacons[3].rssi,
-		req.body.beacons[4].macAddress, req.body.beacons[4].rssi
+                req.body.beacons[4].macAddress, req.body.beacons[4].rssi
             ]
         };
         PythonShell.run('../knn.py', options, (err, konum) => {
@@ -82,7 +112,7 @@ router.post('/beaconframe', (req, res) => {
                 companyId: req.body.companyId,
                 beacons: req.body.beacons,
                 location: String(konum)
-            }, (err, beaconFrame) =>{
+            }, (err, beaconFrame) => {
                 if (err) return res.status(500).send(err.message);
                 lastData.set(beaconFrame.userId, String(konum));
                 res.status(200).send({ status: true, konum: String(konum) });

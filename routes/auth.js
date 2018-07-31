@@ -20,8 +20,8 @@ router.post('/login', function (req, res) {
         let result = bcrypt.compareSync(req.body.password, user.password);
         if (!result) return res.status(401).send({ auth: false, message: "Sifre Dogrulanamadi !" });    
         
-        //Create token
-        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: 86400 });
+        //Create token 86400
+        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: 5000 });
 
         res.status(200).send({ auth: true, token: token, user: user, message: "Giris Basarili" });
 
@@ -40,14 +40,14 @@ router.post('/register', function (req, res) {
         lastname: req.body.lastname,
         email: req.body.email,
         password: hashedPassword,
+        image: {
+            orginalName:'default.jpeg',
+            path: 'publicImages/default.jpeg'
+        },
         role: "normal"
     }, (err, user) => {
         if (err) return res.status(500).send({ auth: false, message: err.message });
-
-        //create token
-        let token = jwt.sign({ id: user._id }, config.apiKey, { expiresIn: 86400 });
-
-        res.status(200).send({ auth: true, token: token, user: user });
+        res.status(200).send(user);
     });
 
 });
