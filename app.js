@@ -23,14 +23,13 @@ app.use("/publicImages", express.static(path.resolve(__dirname, 'publicImages'))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
-
 app.use(cors())
+app.use(tokenController);
 
 
 //routes
-app.use('/auth', Auth);
-app.use(tokenController);
 
+app.use('/auth', Auth);
 app.use('/user', User);
 app.use('/store', Store)
 app.use('/company', Company);

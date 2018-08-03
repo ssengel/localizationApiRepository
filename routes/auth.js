@@ -21,7 +21,7 @@ router.post('/login', function (req, res) {
         if (!result) return res.status(401).send({ auth: false, message: "Sifre Dogrulanamadi !" });    
         
         //Create token 86400
-        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: 5000 });
+        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: 60 });
 
         res.status(200).send({ auth: true, token: token, user: user, message: "Giris Basarili" });
 

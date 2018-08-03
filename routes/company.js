@@ -23,6 +23,18 @@ router.get('/:id',  permit("admin","company"), (req, res) => {
     })
 })
 
+//create a new company
+router.post('/', permit("admin"), (req, res) =>{
+    Company.create({
+        _id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        email: req.body.email
+    }, (err, company) =>{
+        if(err) return res.status(444).send(err.message);
+        res.status(200).send(company);
+    })
+})
+
 //all stores of a company
 router.get('/:id/store', permit('admin','company'), (req, res) => {
     Company.findOne({ _id: req.params.id }).
