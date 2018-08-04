@@ -20,10 +20,12 @@ router.post('/login', function (req, res) {
         let result = bcrypt.compareSync(req.body.password, user.password);
         if (!result) return res.status(401).send({ auth: false, message: "Sifre Dogrulanamadi !" });    
         
-        //Create token 86400
-        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: 60 });
-
-        res.status(200).send({ auth: true, token: token, user: user, message: "Giris Basarili" });
+        //Create token
+        expire = 20;
+        let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: expire });
+        console.log();
+        
+        res.status(200).send({ token: token, expiresIn:expire, createdAt:new Date().getTime(), user: user});
 
     });
 });
