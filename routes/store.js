@@ -1,9 +1,7 @@
 let express = require('express');
 let router = express.Router();
 let mongoose = require('mongoose');
-
 let permit = require('../helpers/permission')
-
 let Store = require('../models/Store');
 
 //all stores

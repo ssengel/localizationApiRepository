@@ -7,7 +7,7 @@ let BeaconSchema = new Schema({
     storeId: {type: Schema.Types.ObjectId, ref: 'Store'},
     name: String,
     location: String,
-    createdAt: {type: Date, default: Date.now()}
+    createdAt: {type: String, default:new Date().toString()}
 }, {versionKey: false});
 
 module.exports = mongoose.model('Beacon', BeaconSchema);

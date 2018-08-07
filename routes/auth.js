@@ -9,7 +9,7 @@ let config = require('../config');
 let User = require('../models/User');
 
 
-//Login User Mobil
+//Login User
 router.post('/login', function (req, res) {
 
     User.findOne({ username: req.body.username }, function (err, user) {
@@ -21,16 +21,15 @@ router.post('/login', function (req, res) {
         if (!result) return res.status(401).send({ auth: false, message: "Sifre Dogrulanamadi !" });    
         
         //Create token
-        expire = 20;
+        let expire = 60*20;//20dk
         let token = jwt.sign(user.toJSON(), config.apiKey, { expiresIn: expire });
-        console.log();
         
-        res.status(200).send({ token: token, expiresIn:expire, createdAt:new Date().getTime(), user: user});
+        res.status(200).send({ token: token, tokenExpire:expire, tokenCreatedAt:new Date().toString(), user: user});
 
     });
 });
 
-//Register User Mobil
+//Register User
 router.post('/register', function (req, res) {
 
     let hashedPassword = bcrypt.hashSync(req.body.password, 8);

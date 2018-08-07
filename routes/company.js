@@ -3,7 +3,6 @@ let router = express.Router();
 let mongoose = require('mongoose');
 let Company = require('../models/Company');
 let Store = require('../models/Store');
-let Counter = require('../models/Counter');
 let permit = require('../helpers/permission');
 
 
@@ -63,7 +62,7 @@ router.get('/:id/store/:storeId', permit('admin','company'), (req, res) => {
 
 // asagisi duzeltilmeli...
 
-//Firmanin bir magazasina Kampanya Ekle
+//Firmanin bir magazasina bildirim Ekle
 router.post('/store/:id/notification',(req, res) => {
     Company.findOne({ _id: req.companyId }, (err, company) => {
         if (err) return res.status(500).send(err.message);

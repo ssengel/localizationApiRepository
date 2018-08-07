@@ -6,7 +6,9 @@ let StoreSchema = new Schema({
     name: String,
     map: {type: String, default: 'haritaYolu'},
     dataSet: {type: String, default: 'veriSetiYolu'},
-    notifications: [{name: String, declaration: String, location: String}]
+    notifications: [{name: String, declaration: String, location: String}],
+    discounts: [{type: Schema.Types.ObjectId, ref: 'Discount'}],
+    createdAt: {type: String, default:new Date().toString()}
 }, {versionKey: false});
 
 module.exports = mongoose.model('Store', StoreSchema);

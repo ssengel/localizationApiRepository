@@ -19,7 +19,7 @@ let UserSchema = new Schema({
         }
     },
     role: String,
-    createdAt: { type: Date, default: Date.now }
+    createdAt: {type: String, default:new Date().toString()}
 }, { versionKey: false });
 
 

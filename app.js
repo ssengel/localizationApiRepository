@@ -6,16 +6,15 @@ let morgan = require('morgan');//logger
 let tokenController = require('./helpers/tokenController');
 let cors = require('cors');
 let path = require('path');
-
-
-
 //routes modules
-let User = require('./routes/user');
-let Store = require('./routes/store');
-let Company = require('./routes/company');
-let System = require('./routes/system');
-let Auth = require('./routes/auth');
+// let User = require('./routes/user');
+// let Store = require('./routes/store');
+// let Company = require('./routes/company');
+// let System = require('./routes/system');
+// let Auth = require('./routes/auth');
+// let Discount = require('./routes/discount');
 
+let routes = require('./routes/mainRoute');
 
 
 //middleware
@@ -24,15 +23,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cors())
-app.use(tokenController);
+
+//app.use(tokenController);
 
 
 //routes
+// app.use('/auth', Auth);
+// app.use('/user', User);
+// app.use('/store', Store)
+// app.use('/company', Company);
+// app.use('/system', System);
+routes.mainRoute(app);
 
-app.use('/auth', Auth);
-app.use('/user', User);
-app.use('/store', Store)
-app.use('/company', Company);
-app.use('/system', System);
+//last error handling
+app.use((err, req, res, next) => { 
+    res.status(err.status || 500);
+    res.send(err.message);
+})
 
 module.exports = app;

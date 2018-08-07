@@ -6,7 +6,6 @@ let Company = require('../models/Company');
 let Store = require('../models/Store');
 let Beacon = require('../models/Beacon');
 let User = require('../models/User');
-let Counter = require('../models/Counter');
 
 
 
