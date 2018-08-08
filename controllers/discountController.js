@@ -1,8 +1,6 @@
-let discountDBO = require('../dbOperations/discount');
-
+let discountDBO = require('../dbOperations/discountDBO');
+let badRequest = require('../helpers/badRequestError');
 //bu seviyedeki hatalar onceden tanimsiz ve istemciyi ilgilendiren hatalar.
-let _err = new Error();
-_err.status = 400;
 
 exports.createDiscount = (discountData) => {
     return new Promise((resolve, reject) => {
@@ -10,8 +8,8 @@ exports.createDiscount = (discountData) => {
             !discountData.content ||
             !discountData.discountRate
         ) {
-            _err.message = "Alanlar Bos Gecilemez !!!";
-            reject(_err);
+
+            reject(badRequest('Discount un Bazi Bilgileri Eksik !!'));
             return;
         }
         //diger kontroller ve  on islemlerde burada yapilabilir

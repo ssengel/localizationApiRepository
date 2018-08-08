@@ -1,4 +1,4 @@
-let discountController = require('../controllers/discount');
+let discountController = require('../controllers/discountController');
 
 exports.createDiscount = ((req, res, next) => {
 
@@ -11,16 +11,4 @@ exports.createDiscount = ((req, res, next) => {
         .catch(err => {
             next(err);
         })
-})
-
-exports.getAll = ((req, res, next) => {
-
-})
-
-exports.getById = ((req, res, next) => {
-
-})
-
-exports.findDiscount = ((req, res, next) => {
-
 })

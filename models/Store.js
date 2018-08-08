@@ -2,12 +2,11 @@ let mongoose = require('mongoose')
 let Schema = mongoose.Schema;
 
 let StoreSchema = new Schema({
-    _id: Schema.Types.ObjectId,
+    companyId: {type: Schema.Types.ObjectId, ref: 'Company'},
     name: String,
-    map: {type: String, default: 'haritaYolu'},
-    dataSet: {type: String, default: 'veriSetiYolu'},
-    notifications: [{name: String, declaration: String, location: String}],
-    discounts: [{type: Schema.Types.ObjectId, ref: 'Discount'}],
+    phone: String,
+    address: String,
+    map: String,
     createdAt: {type: String, default:new Date().toString()}
 }, {versionKey: false});
 
