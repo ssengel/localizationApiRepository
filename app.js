@@ -6,6 +6,7 @@ let morgan = require('morgan');//logger
 let tokenController = require('./helpers/tokenController');
 let cors = require('cors');
 let path = require('path');
+let routes = require('./routes/mainRoute');
 //routes modules
 // let User = require('./routes/user');
 // let Store = require('./routes/store');
@@ -14,7 +15,7 @@ let path = require('path');
 // let Auth = require('./routes/auth');
 // let Discount = require('./routes/discount');
 
-let routes = require('./routes/mainRoute');
+
 
 
 //middleware
@@ -24,15 +25,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cors())
 
-//app.use(tokenController);
+app.use(tokenController);
 
 
 //routes
-// app.use('/auth', Auth);
-// app.use('/user', User);
-// app.use('/store', Store)
-// app.use('/company', Company);
-// app.use('/system', System);
 routes.mainRoute(app);
 
 //last error handling

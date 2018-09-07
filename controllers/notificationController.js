@@ -2,71 +2,64 @@ let notificationDBO = require('../dbOperations/notificationDBO');
 let badRequest = require('../helpers/badRequestError');
 
 
-exports.createNotification = (notificationData) => {
-    return new Promise((resolve, reject) => {
-        if (!notificationData.title ||
-            !notificationData.body ||
-            !notificationData.location ||
-            !notificationData.storeId
-        ) {
-            reject(badRequest('Bildirimin Bazi Bilgileri Eksik !!'));
-            return;
-        }
+exports.createNotification = (req, res, body) => {
+
+    const mNotification = req.body;
+
+    if (!mNotification.title ||
+        !mNotification.body ||
+        !mNotification.location ||
+        !mNotification.storeId
+    ) {
+        reject(badRequest('Bildirimin Bazi Bilgileri Eksik !!'));
+        return;
+    }
 
 
 
-        notificationDBO.createNotification(notificationData)
-            .then(notification => {
-                resolve(notification);
-            })
-            .catch(err => {
-                reject(err);
-            })
-
-    });
+    notificationDBO.createNotification(mNotification)
+        .then(notification => {
+            res.status(200).send(notification);
+        })
+        .catch(err => {
+            next(err);
+        })
 }
 
-exports.getAllNotifications = () => {
-    return new Promise((resolve, reject) => {
-
+exports.getNotifications = (req, res, next) => {
 
         notificationDBO.getAllNotifications()
             .then(notifications => {
-                resolve(notifications);
+                res.status(200).send(notifications);
             })
             .catch(err => {
-                reject(err);
+                next(err);
             })
 
-    });
 }
 
-exports.getNotificationById = (notificationId) => {
-    return new Promise((resolve, reject) => {
+exports.getNotificationById = (req, res, next) => {
 
+        const mNotificationId = req.params.id;
 
-        notificationDBO.getNotificationById(notificationId)
+        notificationDBO.getNotificationById(mNotificationId)
             .then(notification => {
-                resolve(notification);
+                res.status(200).send(notification);
             })
             .catch(err => {
-                reject(err);
+                next(err);
             })
-
-    });
 }
 
-exports.deleteNotificationById = (notificationId) => {
-    return new Promise((resolve, reject) => {
+exports.deleteNotificationById = (req, res, next) => {
 
+    const mNotificationId = req.params.id;
 
-        notificationDBO.deleteNotificationById(notificationId)
+        notificationDBO.deleteNotificationById(mNotificationId)
             .then(notification => {
-                resolve(notification);
+                res.status(200).send(notification);
             })
             .catch(err => {
-                reject(err);
+                next(err);
             })
-
-    });
 }

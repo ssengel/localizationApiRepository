@@ -1,37 +1,27 @@
-let express = require('express');
-let router = express.Router();
 let mongoose = require('mongoose');
-let PythonShell = require('python-shell');
-let permit = require('../helpers/permission');
 let multer = require('multer');
 let imageUpload = require('../helpers/imageUpload');
-
-//models
-let User = require('../models/User');
-let BeaconFrame = require('../models/BeaconFrame');
-let Store = require('../models/Store');
+let User = require('../models/User'); //DBO ya tasinmali
 
 
-
-
-//butun kullanicilar
-router.get('/', permit('admin'), (req, res) => {
+//all users
+exports.getUsers = (req, res, next) => {
     User.find({}, (err, users) => {
         if (err) return res.status(500).send(err.message);
         res.status(200).send(users);
     });
-});
+};
 
-//tek bir kullanici
-router.get('/:id', permit('normal', 'company', 'admin'), (req, res) => {
+//get user by id
+exports.getUserById = (req, res, next) => {
     User.findOne({ _id: req.params.id }, (err, user) => {
         if (err) return res.status(500).send(err.message);
         res.status(200).send(user);
     });
-});
+};
 
-//image Upload
-router.put('/:id/image', permit('normal', 'company', 'admin'), (req, res) => {
+//upload user image
+exports.uploadImage = (req, res, next) => {
     let file = {};
     imageUpload(req, res, function (uploadError) {
         if (uploadError)
@@ -51,7 +41,7 @@ router.put('/:id/image', permit('normal', 'company', 'admin'), (req, res) => {
             })
         }
     });
-});
+};
 
 
 
@@ -133,6 +123,3 @@ router.put('/:id/image', permit('normal', 'company', 'admin'), (req, res) => {
 
 //     return obj;
 // }
-
-
-module.exports = router;

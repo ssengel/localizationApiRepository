@@ -1,16 +1,15 @@
-let express = require('express');
-let router = express.Router();
-let mongoose = require('mongoose');
 
+let mongoose = require('mongoose');
 let jwt = require('jsonwebtoken');
 let bcrypt = require('bcryptjs');
 let config = require('../config');
 
+//veri tabani isleri dbo dosyasina tasinmali 
 let User = require('../models/User');
 
 
 //Login User
-router.post('/login', function (req, res) {
+exports.login = (req, res, next) => {
 
     User.findOne({ username: req.body.username }, function (err, user) {
         if (err) return res.status(500).send('Sunucuda bir hata var.\n' + err);
@@ -27,10 +26,12 @@ router.post('/login', function (req, res) {
         res.status(200).send({ token: token, tokenExpire:expire, tokenCreatedAt:new Date().toString(), user: user});
 
     });
-});
+};
+
+
 
 //Register User
-router.post('/register', function (req, res) {
+exports.register = (req, res, next) => {
 
     let hashedPassword = bcrypt.hashSync(req.body.password, 8);
 
@@ -51,7 +52,4 @@ router.post('/register', function (req, res) {
         res.status(200).send(user);
     });
 
-});
-
-
-module.exports = router;
+};

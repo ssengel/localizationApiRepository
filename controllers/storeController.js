@@ -2,96 +2,96 @@ let StoreDBO = require('../dbOperations/storeDBO');
 let badRequest = require('../helpers/badRequestError');
 //bu seviyedeki hatalar onceden tanimsiz ve istemciyi ilgilendiren hatalar.
 
-exports.createStore = (storeData) => {
-    return new Promise((resolve, reject) => {
-        if (!storeData.companyId ||
-            !storeData.name ||
-            !storeData.phone ||
-            !storeData.map ||
-            !storeData.address
-        ) {
-            reject(badRequest('Magazanin Bazi Bilgileri Eksik !!'));
-            return;
-        }
+exports.createStore = (req, res, next) => {
+
+    const mStore = req.body;
+
+    if (!mStore.companyId ||
+        !mStore.name ||
+        !mStore.phone ||
+        !mStore.map ||
+        !mStore.address
+    ) {
+        reject(badRequest('Magazanin Bazi Bilgileri Eksik !!'));
+        return;
+    }
 
 
-        //kontroller basarili ise DBO islemini gercekle
-        StoreDBO.createStore(storeData)
-            .then(store => {
-                resolve(store);
-            })
-            .catch(err => {
-                reject(err);
-            })
+    //kontroller basarili ise DBO islemini gercekle
+    StoreDBO.createStore(mStore)
+        .then(store => {
+            res.status(200).send(store);
+        })
+        .catch(err => {
+            next(err);
+        })
 
-    });
-}
-
-exports.getAllStores = () => {
-    return new Promise((resolve, reject) => {
-
-        StoreDBO.getAllStores()
-            .then(stores => {
-                resolve(stores);
-            })
-            .catch(err => {
-                reject(err);
-            })
-    })
 
 }
 
-exports.getStoreById = (storeId) => {
-    return new Promise((resolve, reject) => {
+exports.getStores = (req, res, next) => {
 
-        StoreDBO.getStoreById(storeId)
-            .then(store => {
-                resolve(store);
-            })
-            .catch(err => {
-                reject(err);
-            })
+    StoreDBO.getAllStores()
+        .then(stores => {
+            res.status(200).send(stores);
+        })
+        .catch(err => {
+            next(err);
+        })
 
-    })
 }
 
-exports.deleteStoreById = (storeId) => {
-    return new Promise((resolve, reject) => {
-        StoreDBO.deleteStoreById(storeId)
-            .then(store => {
-                resolve(store);
-            })
-            .catch(err => {
-                reject(err);
-            })
-    })
+exports.getStoreById = (req, res, next) => {
+
+    const mStoreId = req.params.id;
+
+    StoreDBO.getStoreById(mStoreId)
+        .then(store => {
+            res.status(200).send(store);
+        })
+        .catch(err => {
+            next(err);
+        })
+
 }
 
-exports.getAllNotificationsOfStoreById = (storeId) => {
-    return new Promise((resolve, reject) => {
+exports.deleteStoreById = (req, res, next) => {
+    const mStoreId = req.params.id;
 
-        StoreDBO.getAllNotificationsOfStoreById(storeId)
-            .then(notifications => {
-                resolve(notifications);
-            })
-            .catch(err => {
-                reject(err);
-            })
+    StoreDBO.deleteStoreById(mStoreId)
+        .then(store => {
+            res.status(200).send(store);
+        })
+        .catch(err => {
+            next(err);
+        })
+}
 
-    })
+exports.getNotificationsOfStore = (req, res, next) => {
+
+    const mStoreId = req.params.id;
+
+    StoreDBO.getAllNotificationsOfStoreById(mStoreId)
+        .then(notifications => {
+            res.status(200).send(notifications);
+        })
+        .catch(err => {
+            next(err);
+        })
+
 }
 
 
-exports.getAllDiscountsOfStoreById = (storeId) => {
-    return new Promise((resolve, reject) => {
+exports.getDiscountsOfStore = (req, res, next) => {
 
-        StoreDBO.getAllDiscountsOfStoreById(storeId)
-            .then(discounts => {
-                resolve(discounts);
-            })
-            .catch(err => {
-                reject(err);
-            })
+    const mStoreId = req.params.id;
 
-    })
+    StoreDBO.getAllDiscountsOfStoreById(mStoreId)
+        .then(discounts => {
+            res.status(200).send(discounts);
+        })
+        .catch(err => {
+            next(err);
+        })
+
 }
